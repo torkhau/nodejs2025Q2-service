@@ -9,7 +9,7 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { IsUUIDPipe } from 'src/common/pipes';
+import { IsUUIDPipe } from '../../common';
 import { BaseController } from '../abstract';
 import { CreateUserDto, ResponseUserDto, UpdatePasswordDto } from './dto';
 import { User } from './interfaces';
