@@ -7,7 +7,7 @@ export class UserByIdPipe implements PipeTransform<string, Promise<User>> {
   constructor(private readonly userService: UserService) {}
 
   async transform(id: string): Promise<User> {
-    const user = await this.userService.getUserById(id);
+    const user = await this.userService.getById(id);
 
     if (!user) throw new NotFoundException(`User with id "${id}" not found`);
 

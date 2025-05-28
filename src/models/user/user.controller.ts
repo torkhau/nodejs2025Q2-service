@@ -9,26 +9,23 @@ import {
   Post,
   Put,
 } from '@nestjs/common';
-import { IsUUIDPipe } from 'src/pipes';
+import { IsUUIDPipe } from 'src/common/pipes';
+import { BaseController } from '../abstract';
 import { CreateUserDto, ResponseUserDto, UpdatePasswordDto } from './dto';
 import { User } from './interfaces';
 import { UserByIdPipe } from './pipes';
 import { UserService } from './user.service';
 
 @Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UserController extends BaseController<User, ResponseUserDto> {
+  constructor(protected override readonly service: UserService) {
+    super(service);
+  }
 
-  private toDTO(user: User): ResponseUserDto {
+  toDTO(user: User): ResponseUserDto {
     const { password: _password, ...rest } = user;
 
     return rest;
-  }
-
-  @Get()
-  async findAll() {
-    const users = await this.userService.getAllUsers();
-    return users.map(this.toDTO.bind(this));
   }
 
   @Get(':id')
@@ -38,7 +35,7 @@ export class UserController {
 
   @Post()
   async create(@Body() createUserDto: CreateUserDto) {
-    const user = await this.userService.createUser(createUserDto);
+    const user = await this.service.create(createUserDto);
 
     return this.toDTO(user);
   }
@@ -51,9 +48,9 @@ export class UserController {
     if (user.password !== updateUserDto.oldPassword)
       throw new ForbiddenException('Password is wrong');
 
-    user.password = updateUserDto.newPassword;
-
-    const updatedUser = await this.userService.updateUser(user);
+    const updatedUser = await this.service.update(user.id, {
+      password: updateUserDto.newPassword,
+    });
 
     return this.toDTO(updatedUser);
   }
@@ -61,6 +58,6 @@ export class UserController {
   @Delete(':id')
   @HttpCode(204)
   async delete(@Param('id', IsUUIDPipe, UserByIdPipe) user: User) {
-    await this.userService.deleteUser(user);
+    await this.service.delete(user.id);
   }
 }
