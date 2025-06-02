@@ -19,6 +19,8 @@ npm install
 
 ## Running application
 
+**Before running and testing application, please, switch to the `part1` branch.**
+
 ```
 npm start
 ```
