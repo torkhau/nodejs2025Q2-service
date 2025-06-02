@@ -20,4 +20,16 @@ export class TrackService extends BaseService<Track> {
     await this.favoriteService.remove(this.entityName, track);
     await super.delete(id);
   }
+
+  async deleteArtist(artistId: string): Promise<void> {
+    this.items.forEach((item) => {
+      if (item.artistId === artistId) item.artistId = null;
+    });
+  }
+
+  async deleteAlbum(albumId: string): Promise<void> {
+    this.items.forEach((item) => {
+      if (item.albumId === albumId) item.albumId = null;
+    });
+  }
 }
