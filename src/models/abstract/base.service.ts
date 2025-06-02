@@ -7,6 +7,10 @@ export abstract class BaseService<T extends { id: string }> {
     return this.items;
   }
 
+  async findAllByIds(ids: string[]): Promise<T[]> {
+    return this.items.filter((item) => ids.includes(item.id));
+  }
+
   async getById(id: string): Promise<T | null> {
     return this.items.find((item) => item.id === id) ?? null;
   }
