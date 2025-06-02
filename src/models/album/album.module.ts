@@ -1,9 +1,11 @@
-import { Module } from '@nestjs/common';
-import { AlbumByIdPipe } from './pipes';
+import { forwardRef, Module } from '@nestjs/common';
+import { FavoriteModule } from '../favorite/favorite.module';
 import { AlbumController } from './album.controller';
 import { AlbumService } from './album.service';
+import { AlbumByIdPipe } from './pipes';
 
 @Module({
+  imports: [forwardRef(() => FavoriteModule)],
   controllers: [AlbumController],
   providers: [AlbumService, AlbumByIdPipe],
   exports: [AlbumService],
