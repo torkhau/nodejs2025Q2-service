@@ -5,7 +5,7 @@ import { Album } from '../album';
 import { Artist } from '../artist';
 
 @Entity()
-export class Tract extends EntityBase implements ITrack {
+export class Track extends EntityBase implements ITrack {
   @Column('text')
   name: string;
 
@@ -14,14 +14,14 @@ export class Tract extends EntityBase implements ITrack {
 
   @ManyToOne(() => Artist, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'artistId' })
-  artist: Artist | null;
+  artist?: Artist | null;
 
   @Column('uuid', { nullable: true })
   albumId: string | null;
 
   @ManyToOne(() => Album, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'albumId' })
-  album: Album | null;
+  album?: Album | null;
 
   @Column('smallint')
   duration: number;

@@ -1,39 +1,38 @@
-import { v4 } from 'uuid';
+import { FindOptionsWhere, Repository } from 'typeorm';
+import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity';
+import { EntityBase } from '../../db/abstract';
 
-export abstract class BaseService<T extends { id: string }> {
-  protected readonly items: T[] = [];
+export abstract class BaseService<T extends EntityBase> {
+  protected constructor(protected readonly repository: Repository<T>) {}
 
   async getAll(): Promise<T[]> {
-    return this.items;
+    return await this.repository.find();
   }
 
-  async findAllByIds(ids: string[]): Promise<T[]> {
-    return this.items.filter((item) => ids.includes(item.id));
-  }
+  // async findAllByIds(ids: string[]): Promise<T[]> {
+  //   return this.items.filter((item) => ids.includes(item.id));
+  // }
 
   async getById(id: string): Promise<T | null> {
-    return this.items.find((item) => item.id === id) ?? null;
+    return await this.repository.findOneBy({ id } as FindOptionsWhere<T>);
   }
 
   async create(item: Omit<T, 'id'>): Promise<T> {
-    const newItem: T = { ...item, id: v4() } as T;
+    const newItem = this.repository.create({ ...item } as unknown as T);
 
-    this.items.push(newItem);
-
-    return newItem;
+    return await this.repository.save(newItem);
   }
 
   async update(id: string, item: Partial<Omit<T, 'id'>>): Promise<T> {
-    const index = this.items.findIndex((item) => item.id === id);
+    await this.repository.update(
+      id,
+      item as unknown as QueryDeepPartialEntity<T>,
+    );
 
-    this.items[index] = { ...this.items[index], ...item };
-
-    return this.items[index];
+    return await this.getById(id);
   }
 
   async delete(id: string): Promise<void> {
-    const index = this.items.findIndex((item) => item.id === id);
-
-    this.items.splice(index, 1);
+    await this.repository.delete(id);
   }
 }

@@ -1,39 +1,38 @@
 import { Injectable } from '@nestjs/common';
-import { v4 } from 'uuid';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from 'src/db/user';
+import { Repository } from 'typeorm';
 import { BaseService } from '../abstract';
 import { CreateUserDto } from './dto';
-import { User } from './interfaces';
 
 @Injectable()
 export class UserService extends BaseService<User> {
+  constructor(
+    @InjectRepository(User)
+    albumRepository: Repository<User>,
+  ) {
+    super(albumRepository);
+  }
+
   async create({ login, password }: CreateUserDto): Promise<User> {
     const timestamp = Date.now();
-    const newUser: User = {
-      id: v4(),
+
+    return await super.create({
       login,
       password,
       version: 1,
       createdAt: timestamp,
       updatedAt: timestamp,
-    };
-
-    this.items.push(newUser);
-
-    return newUser;
+    });
   }
 
   async update(id: string, data: Pick<User, 'password'>): Promise<User> {
-    const index = this.items.findIndex((user) => id === user.id);
+    const { version } = await this.getById(id);
 
-    const oldUser = { ...this.items[index] };
-
-    this.items[index] = {
-      ...oldUser,
-      ...data,
-      version: oldUser.version + 1,
+    return await super.update(id, {
+      version: version + 1,
       updatedAt: Date.now(),
-    };
-
-    return this.items[index];
+      password: data.password,
+    });
   }
 }

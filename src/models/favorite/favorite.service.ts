@@ -1,42 +1,59 @@
-import { forwardRef, Inject, Injectable } from '@nestjs/common';
-import { AlbumService } from '../album/album.service';
-import { ArtistService } from '../artist/artist.service';
-import { TrackService } from '../track/track.service';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { FavArtist } from 'src/db/fav/album';
+import { FavAlbum } from 'src/db/fav/artist';
+import { FavTrack } from 'src/db/fav/track';
+import { Repository } from 'typeorm';
 import { FavoritesResponse } from './interfaces';
 import { Entity, EntityItem } from './types';
 
 @Injectable()
 export class FavoriteService {
-  private readonly favorites: Record<Entity, Set<string>> = {
-    artist: new Set<string>(),
-    album: new Set<string>(),
-    track: new Set<string>(),
-  };
-
   constructor(
-    @Inject(forwardRef(() => AlbumService))
-    private readonly albumService: AlbumService,
-    @Inject(forwardRef(() => ArtistService))
-    private readonly artistService: ArtistService,
-    @Inject(forwardRef(() => TrackService))
-    private readonly trackService: TrackService,
+    @InjectRepository(FavArtist)
+    private readonly favArtistRepo: Repository<FavArtist>,
+
+    @InjectRepository(FavAlbum)
+    private readonly favAlbumRepo: Repository<FavAlbum>,
+
+    @InjectRepository(FavTrack)
+    private readonly favTrackRepo: Repository<FavTrack>,
   ) {}
 
-  getAll = async (): Promise<FavoritesResponse> => {
-    const [artists, albums, tracks] = await Promise.all([
-      this.artistService.findAllByIds([...this.favorites.artist]),
-      this.albumService.findAllByIds([...this.favorites.album]),
-      this.trackService.findAllByIds([...this.favorites.track]),
+  async getAll(): Promise<FavoritesResponse> {
+    const [favArtists, favAlbums, favTracks] = await Promise.all([
+      this.favArtistRepo.find(),
+      this.favAlbumRepo.find(),
+      this.favTrackRepo.find(),
     ]);
 
-    return { artists, albums, tracks };
-  };
+    return {
+      artists: favArtists.map(({ artist }) => artist),
+      albums: favAlbums.map(({ album }) => album),
+      tracks: favTracks.map(({ track }) => track),
+    };
+  }
 
   async add(entity: Entity, entityItem: EntityItem): Promise<void> {
-    await this.favorites[entity].add(entityItem.id);
+    const repository = this.getRepository(entity);
+    const favEntity = repository.create({ [entity]: entityItem });
+
+    await repository.save(favEntity);
   }
 
   async remove(entity: Entity, entityItem: EntityItem): Promise<void> {
-    await this.favorites[entity].delete(entityItem.id);
+    const repository = this.getRepository(entity);
+    await repository.delete({ [entity]: entityItem });
+  }
+
+  private getRepository(entity: Entity): Repository<unknown> {
+    switch (entity) {
+      case 'artist':
+        return this.favArtistRepo;
+      case 'album':
+        return this.favAlbumRepo;
+      case 'track':
+        return this.favTrackRepo;
+    }
   }
 }

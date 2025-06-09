@@ -16,5 +16,5 @@ export class Album extends EntityBase implements IAlbum {
 
   @ManyToOne(() => Artist, { onDelete: 'SET NULL' })
   @JoinColumn({ name: 'artistId' })
-  artist: Artist | null;
+  artist?: Artist | null;
 }
