@@ -28,7 +28,9 @@
     "test:albums": "npm test -- test/albums.e2e.spec.ts",
     "test:tracks": "npm test -- test/tracks.e2e.spec.ts",
     "test:favorites": "npm test -- test/favorites.e2e.spec.ts",
-    "docker:build": "docker compose up --build"
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up",
+    "docker:down": "docker compose down"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.16",
