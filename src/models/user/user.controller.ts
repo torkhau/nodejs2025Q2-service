@@ -23,9 +23,13 @@ export class UserController extends BaseController<User, ResponseUserDto> {
   }
 
   toDTO(user: User): ResponseUserDto {
-    const { password: _password, ...rest } = user;
+    const { password: _password, createdAt, updatedAt, ...rest } = user;
 
-    return rest;
+    return {
+      createdAt: Number(createdAt),
+      updatedAt: Number(updatedAt),
+      ...rest,
+    };
   }
 
   @Get(':id')

@@ -9,9 +9,9 @@ import { CreateUserDto } from './dto';
 export class UserService extends BaseService<User> {
   constructor(
     @InjectRepository(User)
-    albumRepository: Repository<User>,
+    userRepository: Repository<User>,
   ) {
-    super(albumRepository);
+    super(userRepository);
   }
 
   async create({ login, password }: CreateUserDto): Promise<User> {

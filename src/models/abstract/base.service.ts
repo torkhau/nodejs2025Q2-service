@@ -9,10 +9,6 @@ export abstract class BaseService<T extends EntityBase> {
     return await this.repository.find();
   }
 
-  // async findAllByIds(ids: string[]): Promise<T[]> {
-  //   return this.items.filter((item) => ids.includes(item.id));
-  // }
-
   async getById(id: string): Promise<T | null> {
     return await this.repository.findOneBy({ id } as FindOptionsWhere<T>);
   }

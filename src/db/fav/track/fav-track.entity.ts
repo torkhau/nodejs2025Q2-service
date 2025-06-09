@@ -1,13 +1,13 @@
 import { EntityBase } from 'src/db/abstract';
 import { Track } from 'src/db/track';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
 export class FavTrack extends EntityBase {
-  @Column('uuid', { unique: true })
+  @Column('uuid')
   trackId: string;
 
-  @OneToOne(() => Track, { onDelete: 'CASCADE' })
+  @ManyToOne(() => Track, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'trackId' })
   track: Track;
 }

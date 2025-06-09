@@ -4,18 +4,18 @@ import { EntityBase } from '../abstract';
 
 @Entity()
 export class User extends EntityBase implements IUser {
-  @Column()
+  @Column('text')
   login: string;
 
-  @Column()
+  @Column('text')
   password: string;
 
-  @Column()
+  @Column('int')
   version: number;
 
-  @Column()
+  @Column('bigint')
   createdAt: number;
 
-  @Column()
+  @Column('bigint')
   updatedAt: number;
 }

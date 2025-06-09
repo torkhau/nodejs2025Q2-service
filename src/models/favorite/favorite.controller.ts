@@ -8,7 +8,7 @@ import {
   Post,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { IsUUIDPipe } from '../../common';
+import { IsUUIDPipe } from 'src/common';
 import { AlbumService } from '../album/album.service';
 import { ArtistService } from '../artist/artist.service';
 import { TrackService } from '../track/track.service';

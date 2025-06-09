@@ -1,13 +1,13 @@
 import { EntityBase } from 'src/db/abstract';
-import { Artist } from 'src/db/artist';
-import { Column, Entity, JoinColumn, OneToOne } from 'typeorm';
+import { Album } from 'src/db/album';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 
 @Entity()
-export class FavArtist extends EntityBase {
-  @Column('uuid', { unique: true })
-  artistId: string;
+export class FavAlbum extends EntityBase {
+  @Column('uuid')
+  albumId: string;
 
-  @OneToOne(() => Artist, { onDelete: 'CASCADE' })
-  @JoinColumn({ name: 'artistId' })
-  artist: Artist;
+  @ManyToOne(() => Album, { onDelete: 'CASCADE' })
+  @JoinColumn({ name: 'albumId' })
+  album: Album;
 }

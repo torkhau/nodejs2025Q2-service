@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FavArtist } from 'src/db/fav/album';
-import { FavAlbum } from 'src/db/fav/artist';
+import { FavAlbum } from 'src/db/fav/album';
+import { FavArtist } from 'src/db/fav/artist';
 import { FavTrack } from 'src/db/fav/track';
 import { Repository } from 'typeorm';
 import { FavoritesResponse } from './interfaces';
@@ -22,9 +22,9 @@ export class FavoriteService {
 
   async getAll(): Promise<FavoritesResponse> {
     const [favArtists, favAlbums, favTracks] = await Promise.all([
-      this.favArtistRepo.find(),
-      this.favAlbumRepo.find(),
-      this.favTrackRepo.find(),
+      this.favArtistRepo.find({ relations: ['artist'] }),
+      this.favAlbumRepo.find({ relations: ['album'] }),
+      this.favTrackRepo.find({ relations: ['track'] }),
     ]);
 
     return {
