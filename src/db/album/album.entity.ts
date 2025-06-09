@@ -1,18 +1,10 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Album as IAlbum } from '../../models/album/interfaces';
+import { EntityBase } from '../abstract';
 import { Artist } from '../artist';
 
 @Entity()
-export class Album implements IAlbum {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Album extends EntityBase implements IAlbum {
   @Column('text')
   name: string;
 

@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   app:
     container_name: nest_app
@@ -35,9 +33,11 @@ services:
       - nest-network
     volumes:
       - db_data:/var/lib/postgresql/data
+      - db_logs:/var/log/postgresql_logs
 
 volumes:
   db_data:
+  db_logs:
 
 networks:
   nest-network:

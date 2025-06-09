@@ -1,11 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { Artist as IArtist } from '../../models/artist/interfaces';
+import { EntityBase } from '../abstract';
 
 @Entity()
-export class Artist implements IArtist {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Artist extends EntityBase implements IArtist {
   @Column('text')
   name: string;
 

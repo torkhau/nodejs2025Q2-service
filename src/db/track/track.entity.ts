@@ -1,19 +1,11 @@
-import {
-  Column,
-  Entity,
-  JoinColumn,
-  ManyToOne,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
 import { Track as ITrack } from '../../models/track/interfaces';
-import { Artist } from '../artist';
+import { EntityBase } from '../abstract';
 import { Album } from '../album';
+import { Artist } from '../artist';
 
 @Entity()
-export class Tract implements ITrack {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class Tract extends EntityBase implements ITrack {
   @Column('text')
   name: string;
 

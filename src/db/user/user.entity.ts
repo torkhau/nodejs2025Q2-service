@@ -1,11 +1,9 @@
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity } from 'typeorm';
 import { User as IUser } from '../../models/user/interfaces';
+import { EntityBase } from '../abstract';
 
 @Entity()
-export class User implements IUser {
-  @PrimaryGeneratedColumn('uuid')
-  id: string;
-
+export class User extends EntityBase implements IUser {
   @Column()
   login: string;
 
