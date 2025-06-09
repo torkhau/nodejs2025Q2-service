@@ -30,7 +30,8 @@
     "test:favorites": "npm test -- test/favorites.e2e.spec.ts",
     "docker:build": "docker compose build",
     "docker:up": "docker compose up",
-    "docker:down": "docker compose down"
+    "docker:down": "docker compose down",
+    "scan": "c:\\trivy\\trivy image nodejs2025q2-service-app"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.16",
