@@ -21,9 +21,11 @@ npm install
 
 **Before running and testing application, please, switch to the `part2` branch.**
 
-In order to test the application you need to install the Docker Desktop application.
+In order to test the application you need to install the Docker Desktop application. After installing the application.
 
-After installing the application, you need to create images. This can be done using the command `docker compose build` or start script `docker:build`
+Run the `build` script.
+
+After, you need to create images. This can be done using the command `docker compose build` or start script `docker:build`
 
 To start the container you need to execute the script `docker:up`
 
