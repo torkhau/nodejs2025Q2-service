@@ -19,11 +19,17 @@ npm install
 
 ## Running application
 
-**Before running and testing application, please, switch to the `part1` branch.**
+**Before running and testing application, please, switch to the `part2` branch.**
 
-```
-npm start
-```
+In order to test the application you need to install the Docker Desktop application. After installing the application.
+
+Run the `build` script.
+
+After, you need to create images. This can be done using the command `docker compose build` or start script `docker:build`
+
+To start the container you need to execute the script `docker:up`
+
+To terminate the container, execute the script `docker:down`
 
 After starting the app on port (4000 as default) you can open
 in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
