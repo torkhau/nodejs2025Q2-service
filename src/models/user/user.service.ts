@@ -35,4 +35,8 @@ export class UserService extends BaseService<User> {
       password: data.password,
     });
   }
+
+  async getByLogin(login: string): Promise<User> {
+    return await this.repository.findOneBy({ login });
+  }
 }

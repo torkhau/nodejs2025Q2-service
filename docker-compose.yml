@@ -13,9 +13,6 @@ services:
       - postgres
     networks:
       - nest-network
-    volumes:
-      - .:/app  # нужно для live-reload в dev, убери в prod
-      - /app/node_modules  # чтобы избежать конфликта локальных node_modules
 
   postgres:
     container_name: nest_postgres

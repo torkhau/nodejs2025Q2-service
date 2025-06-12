@@ -4,13 +4,10 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-// import { Album } from './db/album';
-// import { Artist } from './db/artist';
-// import { Tract } from './db/track';
-// import { User } from './db/user';
 import {
   AlbumModule,
   ArtistModule,
+  AuthModule,
   FavoriteModule,
   TrackModule,
   UserModule,
@@ -35,11 +32,12 @@ import {
         };
       },
     }),
-    UserModule,
-    ArtistModule,
     AlbumModule,
-    TrackModule,
+    ArtistModule,
+    AuthModule,
     FavoriteModule,
+    TrackModule,
+    UserModule,
   ],
   controllers: [AppController],
   providers: [AppService],

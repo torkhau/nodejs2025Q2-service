@@ -6,8 +6,6 @@ import { BaseService } from '../abstract';
 
 @Injectable()
 export class ArtistService extends BaseService<Artist> {
-  protected readonly entityName = 'artist';
-
   constructor(
     @InjectRepository(Artist)
     artistRepository: Repository<Artist>,
