@@ -1,4 +1,4 @@
-import { Injectable, LoggerService, Scope } from '@nestjs/common';
+import { Injectable, LoggerService } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -6,19 +6,15 @@ import { LOG_LEVELS_ORDER, LogLevel } from './log-levels.enum';
 
 const LOGS_DIR = path.join(process.cwd(), 'logs');
 
-@Injectable({ scope: Scope.TRANSIENT })
+@Injectable()
 export class CustomLoggingService implements LoggerService {
   private logFilePath: string;
   private errorLogFilePath: string;
   private currentLogLevelIndex: number;
   private maxLogFileSizeKB: number;
-  private context?: string;
+  private context = 'NestApp';
 
-  constructor(
-    private readonly configService: ConfigService,
-    context?: string,
-  ) {
-    this.context = context;
+  constructor(private readonly configService: ConfigService) {
     this.ensureLogsDirectoryExists();
 
     const configuredLogLevel =
@@ -40,10 +36,6 @@ export class CustomLoggingService implements LoggerService {
       );
       this.currentLogLevelIndex = LOG_LEVELS_ORDER.indexOf(LogLevel.LOG);
     }
-  }
-
-  setContext(context: string) {
-    this.context = context;
   }
 
   private ensureLogsDirectoryExists() {
@@ -84,7 +76,7 @@ export class CustomLoggingService implements LoggerService {
     stack?: string,
   ) {
     this.rotateLogFile(filePath);
-    const logEntry = `${new Date().toISOString()} [${level.toUpperCase()}] ${this.context ? `[${this.context}] ` : ''}${message}${stack ? `\nStack: ${stack}` : ''}\n`;
+    const logEntry = `${new Date().toISOString()} [${level.toUpperCase()}] [${this.context}] ${message}${stack ? `\nStack: ${stack}` : ''}\n`;
     fs.appendFile(filePath, logEntry, (err) => {
       if (err)
         process.stderr.write(

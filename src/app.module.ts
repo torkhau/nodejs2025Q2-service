@@ -1,10 +1,13 @@
-import { Module } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { APP_GUARD } from '@nestjs/core';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
+import { AllExceptionsFilter } from './common/filter';
+import { CustomLoggingService } from './common/logger';
+import { LoggerMiddleware } from './common/middleware';
 import {
   AlbumModule,
   ArtistModule,
@@ -42,6 +45,23 @@ import { GlobalAuthGuard } from './models/auth/auth.guard';
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService, { provide: APP_GUARD, useClass: GlobalAuthGuard }],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: GlobalAuthGuard },
+    {
+      provide: APP_FILTER,
+      useFactory: (logger: Logger) => {
+        return new AllExceptionsFilter(logger);
+      },
+      inject: [Logger],
+    },
+    { provide: Logger, useClass: CustomLoggingService },
+    CustomLoggingService,
+    LoggerMiddleware,
+  ],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
