@@ -17,10 +17,8 @@ export class AuthService {
   ) {}
 
   async signup({ login, password }: CreateUserDto): Promise<User> {
-    const hashedPassword = await bcrypt.hash(
-      password,
-      this.configService.get<number>('CRYPT_SALT'),
-    );
+    const salt = Number(this.configService.get('CRYPT_SALT') || '10');
+    const hashedPassword = await bcrypt.hash(password, salt);
 
     return await this.userService.create({ login, password: hashedPassword });
   }
@@ -42,7 +40,7 @@ export class AuthService {
   async refresh({ refreshToken }: RefreshTokenDto): Promise<Tokens> {
     try {
       const { userId } = await this.jwtService.verifyAsync(refreshToken, {
-        secret: this.configService.get<string>('JWT_SECRET_REFRESH_KEY'),
+        secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
       });
 
       const user = await this.userService.getById(userId);
@@ -57,13 +55,10 @@ export class AuthService {
     const payload = { userId: id, login };
 
     const [accessToken, refreshToken] = await Promise.all([
+      this.jwtService.signAsync(payload),
       this.jwtService.signAsync(payload, {
-        expiresIn: this.configService.get<string>('TOKEN_EXPIRE_TIME'),
-        secret: this.configService.get<string>('JWT_SECRET_KEY'),
-      }),
-      this.jwtService.signAsync(payload, {
-        expiresIn: this.configService.get<string>('TOKEN_REFRESH_EXPIRE_TIME'),
-        secret: this.configService.get<string>('JWT_SECRET_REFRESH_KEY'),
+        expiresIn: this.configService.get('TOKEN_REFRESH_EXPIRE_TIME'),
+        secret: this.configService.get('JWT_SECRET_REFRESH_KEY'),
       }),
     ]);
 

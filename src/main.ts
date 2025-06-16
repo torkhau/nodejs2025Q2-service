@@ -7,8 +7,6 @@ import * as YAML from 'yamljs';
 import { AppModule } from './app.module';
 import { ConfigService } from '@nestjs/config';
 
-console.log(join(__dirname, '..', 'doc', 'api.yaml'));
-
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const openAPIObject = YAML.load(

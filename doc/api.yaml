@@ -5,7 +5,7 @@ info:
   version: 1.0.0
 
 servers:
-  - url: /api
+  - url: /
 
 components:
   schemas:
@@ -167,21 +167,22 @@ paths:
                   minLength: 3
                   maxLength: 255
                   description: Username
+                  example: johndoe
                 password:
                   type: string
                   format: password
                   pattern: ^[a-zA-Z0-9]{3,30}
                   description: Password
+                  example: MyStrongP4ssword
               required:
                 - login
                 - password
       responses:
-        204:
+        201:
           description: Successful signup
         400:
           description: Bad request
-        409:
-          description: Conflict. Login already exists
+
   /auth/login:
     post:
       tags:
@@ -200,9 +201,11 @@ paths:
                 login:
                   type: string
                   description: Username
+                  example: johndoe
                 password:
                   type: string
                   description: Password
+                  example: MyStrongP4ssword
               required:
                 - user
                 - login
@@ -214,17 +217,15 @@ paths:
               schema:
                 type: object
                 properties:
-                  token:
+                  accessToken:
                     type: string
-                description: JWT Token
+                  refreshToken:
+                    type: string                
+                description: JWT Tokens
+        400:
+          description: Bad request
         403:
           description: Incorrect login or password
-
-
-
-
-
-
 
 
 
@@ -233,39 +234,38 @@ paths:
       tags:
         - Refresh
       security: []
-      summary: Refresh
-      description: Refresh a user's JWT-token
+      summary: Refresh JWT tokens
+      description: Send a refresh token to receive a new pair of Access token and Refresh token.
       requestBody:
         required: true
         content:
           application/json:
             schema:
               type: object
-              title: example
-              properties:
-                login:
-                  type: string
-                  minLength: 3
-                  maxLength: 255
-                  description: Username
-                password:
-                  type: string
-                  format: password
-                  pattern: ^[a-zA-Z0-9]{3,30}
-                  description: Password
               required:
-                - login
-                - password
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: JWT refresh token
       responses:
         200:
-          description: Successful refresh
+          description: New tokens successfully issued
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  accessToken:
+                    type: string
+                    description: New access token
+                  refreshToken:
+                    type: string
+                    description: New refresh token
         401:
-          description: Bad request. No refreshToken in body
+          description: Missing or invalid DTO (e.g., no refreshToken in body)
         403:
-          description: Conflict. Login already exists
-
-
-
+          description: Invalid or expired refresh token
 
 
 

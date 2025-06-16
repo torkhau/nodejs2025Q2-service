@@ -1,4 +1,11 @@
-import { Body, Controller, HttpCode, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  HttpCode,
+  Post,
+  UnauthorizedException,
+} from '@nestjs/common';
+import { Public } from 'src/common/decorators';
 import { CreateUserDto } from '../user/dto';
 import { AuthService } from './auth.service';
 import { RefreshTokenDto } from './dto';
@@ -7,19 +14,26 @@ import { RefreshTokenDto } from './dto';
 export class AuthController {
   constructor(protected readonly service: AuthService) {}
 
+  @Public()
   @Post('signup')
-  @HttpCode(201)
   async signup(@Body() createUserDto: CreateUserDto) {
-    await this.service.signup(createUserDto);
+    return await this.service.signup(createUserDto);
   }
 
+  @Public()
   @Post('login')
+  @HttpCode(200)
   async login(@Body() createUserDto: CreateUserDto) {
     return this.service.login(createUserDto);
   }
 
-  @Post('refresh ')
+  @Public()
+  @Post('refresh')
+  @HttpCode(200)
   async refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    if (!refreshTokenDto.refreshToken)
+      throw new UnauthorizedException('No refreshToken in body');
+
     return this.service.refresh(refreshTokenDto);
   }
 }

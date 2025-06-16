@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
+import { APP_GUARD } from '@nestjs/core';
 import {
   AlbumModule,
   ArtistModule,
@@ -12,6 +13,7 @@ import {
   TrackModule,
   UserModule,
 } from './models';
+import { GlobalAuthGuard } from './models/auth/auth.guard';
 
 @Module({
   imports: [
@@ -40,6 +42,6 @@ import {
     UserModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { provide: APP_GUARD, useClass: GlobalAuthGuard }],
 })
 export class AppModule {}
