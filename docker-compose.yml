@@ -13,6 +13,8 @@ services:
       - postgres
     networks:
       - nest-network
+    volumes:
+      - ./logs:/app/logs
 
   postgres:
     container_name: nest_postgres

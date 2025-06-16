@@ -70,7 +70,7 @@ export class CustomLoggingService implements LoggerService {
   }
 
   private writeLogToFile(
-    level: LogLevel,
+    level: LogLevel | 'FORCE_LOG',
     message: string,
     filePath: string,
     stack?: string,
@@ -83,6 +83,14 @@ export class CustomLoggingService implements LoggerService {
           `[ERROR] Failed to write log to file ${filePath}: ${err.message}\n`,
         );
     });
+  }
+
+  forceLog(message: any, context?: string) {
+    const ctx = context || this.context;
+    const msg = typeof message === 'object' ? JSON.stringify(message) : message;
+
+    process.stdout.write(`[FORCE_LOG] ${ctx ? `[${ctx}] ` : ''}${msg}\n`);
+    this.writeLogToFile('FORCE_LOG', msg, this.logFilePath);
   }
 
   log(message: any, context?: string) {
